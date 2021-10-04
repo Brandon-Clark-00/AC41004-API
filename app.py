@@ -1,12 +1,12 @@
 from flask import Flask, send_from_directory
 # from flask_restful import Api, Resource, reqparse
-from flask_cors import CORS
+# from flask_cors import CORS
 from ApiHandler import ApiHandler
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
 app = Flask(__name__, static_url_path='', static_folder='../src/build')
-CORS(app)
+# CORS(app)
 api = Api(app)
 
 # @app.route("/", defaults={'path':''})
