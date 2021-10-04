@@ -48,7 +48,7 @@ def testdb():
         db.session.query('1').from_statement(text('SELECT 1')).all()
         return '<h1>Connected to db :)</h1>'
     except Exception as e:
-        print("\nThe error:\n" + str(e) + "\n")
+        print("\nThe error:\n" + str(e) + "\n here we finish")
         return '<h1>Not connected to db :(</h1>'
 
 @app.route('/users')
