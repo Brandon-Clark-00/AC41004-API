@@ -45,7 +45,7 @@ class User(db.Model):
 @app.route('/')
 def testdb():
     try:
-        db.session.query('1').from_statement(text('SELECT 1')).all()
+        users = User.query.all()
         return '<h1>Connected to db :)</h1>'
     except Exception as e:
         print("\nThe error:\n" + str(e) + "\n here we finish")
