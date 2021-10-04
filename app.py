@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
 
 app = Flask(__name__, static_url_path='', static_folder='../src/build')
-# CORS(app)
+CORS(app)
 api = Api(app)
 
 # @app.route("/", defaults={'path':''})
