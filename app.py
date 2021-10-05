@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, send_from_directory, jsonify, request
 from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS
 # from apiHandler import ApiHandler
@@ -8,6 +8,8 @@ from sqlalchemy.sql import text
 app = Flask(__name__, static_url_path='', static_folder='../src/build')
 CORS(app)
 api = Api(app)
+
+parser = reqparse.RequestParser()
 
 # @app.route("/", defaults={'path':''})
 # def serve(path):
@@ -69,6 +71,7 @@ def user_serializer(user):
         'password': user.password
     }
 
+#getting all users
 @app.route('/users')
 def getUsers():
     try:
@@ -77,6 +80,34 @@ def getUsers():
     except Exception as e:
         print("\nThe error:\n" + str(e) + "\n")
         return 'Error getting users'
+
+#handing login request
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        try:
+            data = parser.parse_args()
+            #VALIDATE USER
+            # current_user = User.query.filter(User.Email==data['email']).first()
+            #
+            # if not current_user:
+            #     return {"error":"User not registered"}
+
+            # password = data['password']
+            # if current_user.password == password:
+            #     access_token = create_access_token(identity=data['email'])
+            #     refresh_token = create_refresh_token(identity=data['email'])
+            #     return {
+            #         'email': current_user.Email,
+            #         'access_token': access_token,
+            #         'refresh_token': refresh_token
+            #     }
+            # else:
+            #     return {'error': 'Wrong credentials'}
+            return 'Login page - POST request'
+        except:
+            raise Exception("Cannot login user")
+    return 'Login page - GET Request'
 
 if __name__ == '__main__':
     app.run(debug=True)
