@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, jsonify
 from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS
 # from apiHandler import ApiHandler
@@ -40,6 +40,8 @@ class User(db.Model):
     Postcode = db.Column(db.Text)
     isPhysio = db.Column(db.Text)
     physioID = db.Column(db.Text)
+    lastOnline = db.Column(db.Text)
+    password = db.Column(db.Text)
 
 #testing the db
 @app.route('/')
@@ -51,16 +53,30 @@ def testdb():
         print("\nThe error:\n" + str(e) + "\n here we finish")
         return '<h1>Not connected to db :(</h1>'
 
+#to fix JSON error
+def user_serializer(user):
+    return {
+        'userId': user.userID,
+        'name': user.Name,
+        'dob': user.DoB,
+        'email': user.Email,
+        'address1': user.Address_line_one,
+        'address2': user.Address_line_two,
+        'postcode': user.Postcode,
+        'isPhysio': user.isPhysio,
+        'physioID': user.physioID,
+        'lastOnline': user.lastOnline,
+        'password': user.password
+    }
+
 @app.route('/users')
 def getUsers():
     try:
-        #SQLAlchemy equivelant of a SELECT for the user table
-        users = User.query.all()
-        print(users)
-        return '<h1>Users</h1>'
+        #astriks unpacks map into array
+        return jsonify([*map(user_serializer, User.query.all())])
     except Exception as e:
         print("\nThe error:\n" + str(e) + "\n")
-        return '<h1>Error</h1>'
+        return 'Error getting users'
 
 if __name__ == '__main__':
     app.run(debug=True)
