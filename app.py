@@ -74,6 +74,7 @@ def getUsers():
         print("\nThe error:\n" + str(e) + "\n")
         return jsonify({'Message': 'Error getting users'})
 
+
 #handing login request
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -86,15 +87,9 @@ def login():
             if not user_to_validate:
                 return {"Message": "User not found"}
             if user_to_validate.password == req_data['password']:
-                # Extra security stuff if needed?
-                # access_token = create_access_token(identity=data['email'])
-                # refresh_token = create_refresh_token(identity=data['email'])
-                # return {
-                #     'email': current_user.Email,
-                #     'access_token': access_token,
-                #     'refresh_token': refresh_token
-                # }
-                return {'Message':'LOGIN SUCCESS'}
+
+                return {'username': user_to_validate.Email,
+                        'isPhysio': user_to_validate.isPhysio}
             else:
                 return {'Message':'LOGIN INVALID'}
         except:
@@ -103,3 +98,4 @@ def login():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
