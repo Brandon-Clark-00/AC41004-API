@@ -74,6 +74,7 @@ def getUsers():
         print("\nThe error:\n" + str(e) + "\n")
         return jsonify({'Message': 'Error getting users'})
 
+
 #handing login request
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -84,22 +85,17 @@ def login():
             #get the user with matching email in DB
             user_to_validate = User.query.filter(User.Email==req_data['email']).first()
             if not user_to_validate:
-                return jsonify({'Message': "User not registered"})
+                return {"Message": "User not found"}
             if user_to_validate.password == req_data['password']:
-                # Extra security stuff if needed?
-                # access_token = create_access_token(identity=data['email'])
-                # refresh_token = create_refresh_token(identity=data['email'])
-                # return {
-                #     'email': current_user.Email,
-                #     'access_token': access_token,
-                #     'refresh_token': refresh_token
-                # }
-                return jsonify({'Message':'LOGIN SUCCESS'})
+
+                return {'username': user_to_validate.Email,
+                        'isPhysio': user_to_validate.isPhysio}
             else:
-                return jsonify({'Message':'LOGIN INVALID'})
+                return {'Message':'LOGIN INVALID'}
         except:
             raise Exception("Cannot login user")
-            return jsonify({'Message':'Cannot login user'})
+            return {'Message':'Cannot login user'}
 
 if __name__ == '__main__':
     app.run(debug=True)
+
