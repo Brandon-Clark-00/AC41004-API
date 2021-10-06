@@ -4,18 +4,11 @@ from flask_cors import CORS
 # from apiHandler import ApiHandler
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import text
+import ast
 
-app = Flask(__name__, static_url_path='', static_folder='../src/build')
+app = Flask(__name__)
 CORS(app)
 api = Api(app)
-
-parser = reqparse.RequestParser()
-
-# @app.route("/", defaults={'path':''})
-# def serve(path):
-#     return send_from_directory(app.static.folder, 'index.html')
-#
-# api.add_resource(ApiHandler, '/flask/hello')
 
 # db details
 username = 'AC41004@theohealth'
@@ -79,35 +72,34 @@ def getUsers():
         return jsonify([*map(user_serializer, User.query.all())])
     except Exception as e:
         print("\nThe error:\n" + str(e) + "\n")
-        return 'Error getting users'
+        return jsonify({'Message': 'Error getting users'})
 
 #handing login request
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         try:
-            data = parser.parse_args()
-            #VALIDATE USER
-            # current_user = User.query.filter(User.Email==data['email']).first()
-            #
-            # if not current_user:
-            #     return {"error":"User not registered"}
-
-            # password = data['password']
-            # if current_user.password == password:
-            #     access_token = create_access_token(identity=data['email'])
-            #     refresh_token = create_refresh_token(identity=data['email'])
-            #     return {
-            #         'email': current_user.Email,
-            #         'access_token': access_token,
-            #         'refresh_token': refresh_token
-            #     }
-            # else:
-            #     return {'error': 'Wrong credentials'}
-            return 'Login page - POST request'
+            #change request byte object into a dict
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            #get the user with matching email in DB
+            user_to_validate = User.query.filter(User.Email==req_data['email']).first()
+            if not user_to_validate:
+                return jsonify({'Message': "User not registered"})
+            if user_to_validate.password == req_data['password']:
+                # Extra security stuff if needed?
+                # access_token = create_access_token(identity=data['email'])
+                # refresh_token = create_refresh_token(identity=data['email'])
+                # return {
+                #     'email': current_user.Email,
+                #     'access_token': access_token,
+                #     'refresh_token': refresh_token
+                # }
+                return jsonify({'Message':'LOGIN SUCCESS'})
+            else:
+                return jsonify({'Message':'LOGIN INVALID'})
         except:
             raise Exception("Cannot login user")
-    return 'Login page - GET Request'
+            return jsonify({'Message':'Cannot login user'})
 
 if __name__ == '__main__':
     app.run(debug=True)
