@@ -93,39 +93,36 @@ def getUsers():
 
 
 #handing login request
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        try:
-            #change request byte object into a dict
-            req_data = ast.literal_eval(request.data.decode('utf-8'))
-            #get the user with matching email in DB
-            user_to_validate = User.query.filter(User.Email==req_data['email']).first()
-            if not user_to_validate:
-                return {"Message": "User not found"}
-            if user_to_validate.password == req_data['password']:
-                #store in localstorage
-                localStorage.setItem('userID', user_to_validate.userID);
-                return {'userID': user_to_validate.userID,
-                        'username': user_to_validate.Email,
-                        'isPhysio': user_to_validate.isPhysio}
-            else:
-                return {'Message':'LOGIN INVALID'}
-        except:
-            raise Exception("Cannot login user")
-            return {'Message':'Cannot login user'}
+    try:
+        #change request byte object into a dict
+        req_data = ast.literal_eval(request.data.decode('utf-8'))
+        #get the user with matching email in DB
+        user_to_validate = User.query.filter(User.Email==req_data['email']).first()
+        if not user_to_validate:
+            return {"Message": "User not found"}
+        if user_to_validate.password == req_data['password']:
+            return {'userID': user_to_validate.userID,
+                    'username': user_to_validate.Email,
+                    'isPhysio': user_to_validate.isPhysio}
+        else:
+            return {'Message':'LOGIN INVALID'}
+    except:
+        raise Exception("Cannot login user")
+        return {'Message':'Cannot login user'}
 
 #getting the logged in users sessions
-@app.route('/sessions')
+@app.route('/sessions', methods=['POST'])
 def getSessions():
     try:
-        #get logged in user from react
-
-        #astriks unpacks map into array
-        return jsonify([*map(session_serializer, Session.query.filter(Session.userID == 8))])
-    except Exception as e:
-        print("\nThe error:\n" + str(e) + "\n")
-        return jsonify({'Message': 'Error getting sessions'})
+        #change request byte object into a dict for userID
+        req_data = ast.literal_eval(request.data.decode('utf-8'))
+        userID = req_data["userID"]
+        return jsonify([*map(session_serializer, Session.query.filter(Session.userID == userID))])
+    except:
+        raise Exception("Cannot get users sessions")
+        return {'Message':'Cannot get users sessions'}
 
 
 if __name__ == '__main__':
