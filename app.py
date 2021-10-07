@@ -93,37 +93,42 @@ def getUsers():
 
 
 #handing login request
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    try:
-        #change request byte object into a dict
-        req_data = ast.literal_eval(request.data.decode('utf-8'))
-        #get the user with matching email in DB
-        user_to_validate = User.query.filter(User.Email==req_data['email']).first()
-        if not user_to_validate:
-            return {"Message": "User not found"}
-        if user_to_validate.password == req_data['password']:
-            return {'userID': user_to_validate.userID,
-                    'username': user_to_validate.Email,
-                    'isPhysio': user_to_validate.isPhysio}
-        else:
-            return {'Message':'LOGIN INVALID'}
-    except:
-        raise Exception("Cannot login user")
-        return {'Message':'Cannot login user'}
+    if request.method == 'POST':
+        try:
+            #change request byte object into a dict
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            #get the user with matching email in DB
+            user_to_validate = User.query.filter(User.Email==req_data['email']).first()
+            if not user_to_validate:
+                return {"Message": "User not found"}
+            if user_to_validate.password == req_data['password']:
+                return {'userID': user_to_validate.userID,
+                        'username': user_to_validate.Email,
+                        'isPhysio': user_to_validate.isPhysio}
+            else:
+                return {'Message':'LOGIN INVALID'}
+        except:
+            raise Exception("Cannot login user")
+            return {'Message':'Cannot login user'}
+    else:
+        return {'Message':'Expected post'}
 
 #getting the logged in users sessions
-@app.route('/sessions', methods=['POST'])
+@app.route('/sessions', methods=['GET', 'POST'])
 def getSessions():
-    try:
-        #change request byte object into a dict for userID
-        req_data = ast.literal_eval(request.data.decode('utf-8'))
-        userID = req_data["userID"]
-        return jsonify([*map(session_serializer, Session.query.filter(Session.userID == userID))])
-    except:
-        raise Exception("Cannot get users sessions")
-        return {'Message':'Cannot get users sessions'}
-
+    if request.method == 'POST':
+        try:
+            #change request byte object into a dict for userID
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            userID = req_data["userID"]
+            return jsonify([*map(session_serializer, Session.query.filter(Session.userID == userID))])
+        except:
+            raise Exception("Cannot get users sessions")
+            return {'Message':'Cannot get users sessions'}
+    else:
+        return {'Message':'Expected post'}
 
 if __name__ == '__main__':
     app.run(debug=True)
