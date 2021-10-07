@@ -38,6 +38,15 @@ class User(db.Model):
     lastOnline = db.Column(db.Text)
     password = db.Column(db.Text)
 
+#SESSION MODEL
+## TODO: fix data type to correct params
+class Session(db.Model):
+    __tablename__ = 'session'
+    sessionID = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.Integer)
+    Session_Date = db.Column(db.Integer)
+    Session_length = db.Column(db.Integer)
+
 #testing the db
 @app.route('/')
 def testdb():
@@ -64,6 +73,14 @@ def user_serializer(user):
         'password': user.password
     }
 
+def session_serializer(session):
+    return {
+        'sessionID': session.sessionID,
+        'userID': session.userID,
+        'Session_Date': session.Session_Date,
+        'Session_length': session.Session_length
+    }
+
 #getting all users
 @app.route('/users')
 def getUsers():
@@ -87,15 +104,31 @@ def login():
             if not user_to_validate:
                 return {"Message": "User not found"}
             if user_to_validate.password == req_data['password']:
-
-                return {'username': user_to_validate.Email,
+                return {'userID': user_to_validate.userID,
+                        'username': user_to_validate.Email,
                         'isPhysio': user_to_validate.isPhysio}
             else:
                 return {'Message':'LOGIN INVALID'}
         except:
             raise Exception("Cannot login user")
             return {'Message':'Cannot login user'}
+    else:
+        return {'Message':'Expected post'}
+
+#getting the logged in users sessions
+@app.route('/sessions', methods=['GET', 'POST'])
+def getSessions():
+    if request.method == 'POST':
+        try:
+            #change request byte object into a dict for userID
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            userID = req_data["userID"]
+            return jsonify([*map(session_serializer, Session.query.filter(Session.userID == userID))])
+        except:
+            raise Exception("Cannot get users sessions")
+            return {'Message':'Cannot get users sessions'}
+    else:
+        return {'Message':'Expected post'}
 
 if __name__ == '__main__':
     app.run(debug=True)
-
