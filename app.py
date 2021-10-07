@@ -38,6 +38,15 @@ class User(db.Model):
     lastOnline = db.Column(db.Text)
     password = db.Column(db.Text)
 
+#SESSION MODEL
+## TODO: fix data type to correct params
+class Session(db.Model):
+    __tablename__ = 'session'
+    sessionID = db.Column(db.Integer, primary_key=True)
+    userID = db.Column(db.Integer)
+    Session_Date = db.Column(db.Integer)
+    Session_length = db.Column(db.Integer)
+
 #testing the db
 @app.route('/')
 def testdb():
@@ -62,6 +71,14 @@ def user_serializer(user):
         'physioID': user.physioID,
         'lastOnline': user.lastOnline,
         'password': user.password
+    }
+
+def session_serializer(session):
+    return {
+        'sessionID': session.sessionID,
+        'userID': session.userID,
+        'Session_Date': session.Session_Date,
+        'Session_length': session.Session_length
     }
 
 #getting all users
@@ -96,6 +113,16 @@ def login():
             raise Exception("Cannot login user")
             return {'Message':'Cannot login user'}
 
+#getting the logged in users sessions
+@app.route('/sessions')
+def getSessions():
+    try:
+        #astriks unpacks map into array
+        return jsonify([*map(session_serializer, Session.query.all())])
+    except Exception as e:
+        print("\nThe error:\n" + str(e) + "\n")
+        return jsonify({'Message': 'Error getting sessions'})
+
+
 if __name__ == '__main__':
     app.run(debug=True)
-
