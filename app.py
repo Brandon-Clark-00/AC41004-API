@@ -104,8 +104,10 @@ def login():
             if not user_to_validate:
                 return {"Message": "User not found"}
             if user_to_validate.password == req_data['password']:
-
-                return {'username': user_to_validate.Email,
+                #store in localstorage
+                localStorage.setItem('userID', user_to_validate.userID);
+                return {'userID': user_to_validate.userID,
+                        'username': user_to_validate.Email,
                         'isPhysio': user_to_validate.isPhysio}
             else:
                 return {'Message':'LOGIN INVALID'}
@@ -117,8 +119,10 @@ def login():
 @app.route('/sessions')
 def getSessions():
     try:
+        #get logged in user from react
+
         #astriks unpacks map into array
-        return jsonify([*map(session_serializer, Session.query.all())])
+        return jsonify([*map(session_serializer, Session.query.filter(Session.userID == 8))])
     except Exception as e:
         print("\nThe error:\n" + str(e) + "\n")
         return jsonify({'Message': 'Error getting sessions'})
