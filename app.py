@@ -99,7 +99,7 @@ def sensor_serializer(sensor):
         'maxValue': sensor.maxValue,
         'averageValue': sensor.averageValue,
         'SensorNum': sensor.SensorNum,
-        'SessionID': session.SessionID
+        'SessionID': sensor.SessionID
     }
 
 #getting all users
@@ -158,8 +158,8 @@ def getSensorData():
         try:
             #change request byte object into a dict for userID
             req_data = ast.literal_eval(request.data.decode('utf-8'))
-            sessionID = req_data["sessionID"]
-            return jsonify([*map(sensor_serializer, Sensor.query.filter(Sensor.sessionID == sessionID))])
+            #sessionID = req_data["sessionID"]
+            return jsonify([*map(sensor_serializer, Sensor.query.filter(Sensor.SessionID == 1))])
         except:
             raise Exception("Cannot get sensor data for session")
             return {'Message':'Cannot get sensor data for session'}
