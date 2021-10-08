@@ -38,6 +38,17 @@ class User(db.Model):
     lastOnline = db.Column(db.Text)
     password = db.Column(db.Text)
 
+#SENSOR MODEL
+## TODO: fix data type to correct params
+class Sensor(db.Model):
+    __tablename__ = 'sensor'
+    SensorID = db.Column(db.Integer, primary_key=True)
+    minValue = db.Column(db.Integer)
+    maxValue = db.Column(db.Integer)
+    averageValue = db.Column(db.Integer)
+    SensorNum = db.Column(db.Integer)
+    SessionID = db.Column(db.Integer)
+
 #SESSION MODEL
 ## TODO: fix data type to correct params
 class Session(db.Model):
@@ -79,6 +90,16 @@ def session_serializer(session):
         'userID': session.userID,
         'Session_Date': session.Session_Date,
         'Session_length': session.Session_length
+    }
+
+def sensor_serializer(sensor):
+    return {
+        'SensorID': sensor.SensorID,
+        'minValue': sensor.minValue,
+        'maxValue': sensor.maxValue,
+        'averageValue': sensor.averageValue,
+        'SensorNum': sensor.SensorNum,
+        'SessionID': session.SessionID
     }
 
 #getting all users
@@ -127,6 +148,21 @@ def getSessions():
         except:
             raise Exception("Cannot get users sessions")
             return {'Message':'Cannot get users sessions'}
+    else:
+        return {'Message':'Expected post'}
+
+#getting the sensor data for a session
+@app.route('/sensors', methods=['GET', 'POST'])
+def getSessions():
+    if request.method == 'POST':
+        try:
+            #change request byte object into a dict for userID
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            sessionID = req_data["sessionID"]
+            return jsonify([*map(sensor_serializer, Sensor.query.filter(Sensor.sessionID == sessionID))])
+        except:
+            raise Exception("Cannot get sensor data for session")
+            return {'Message':'Cannot get sensor data for session'}
     else:
         return {'Message':'Expected post'}
 
