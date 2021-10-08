@@ -153,7 +153,7 @@ def getSessions():
 
 #getting the sensor data for a session
 @app.route('/sensors', methods=['GET', 'POST'])
-def getSessions():
+def getSensorData():
     if request.method == 'POST':
         try:
             #change request byte object into a dict for userID
