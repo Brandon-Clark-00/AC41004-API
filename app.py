@@ -166,5 +166,22 @@ def getSensorData():
     else:
         return {'Message':'Expected post'}
 
+#getting the clients of a logged in physio
+@app.route('/clients', methods=['GET', 'POST'])
+def getClients():
+    if request.method == 'POST':
+        try:
+            #change request byte object into a dict for userID
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            userID = req_data["userID"]
+            print(userID)
+            #get all users with the physio id of logged in user
+            return jsonify([*map(user_serializer, User.query.filter(User.physioID == userID))])
+        except:
+            raise Exception("Cannot get assigned clients")
+            return {'Message':'Cannot get assigned clients'}
+    else:
+        return {'Message':'Expected post'}
+
 if __name__ == '__main__':
     app.run(debug=True)
