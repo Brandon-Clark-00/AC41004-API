@@ -151,6 +151,21 @@ def getSessions():
     else:
         return {'Message':'Expected post'}
 
+#getting the logged in users sessions
+@app.route('/clientSessions', methods=['GET', 'POST'])
+def getClientSessions():
+    if request.method == 'POST':
+        try:
+            #change request byte object into a dict for userID
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            clientID = req_data["clientID"]
+            return jsonify([*map(session_serializer, Session.query.filter(Session.userID == clientID))])
+        except:
+            raise Exception("Cannot get users sessions")
+            return {'Message':'Cannot get users sessions'}
+    else:
+        return {'Message':'Expected post'}
+
 #getting the sensor data for a session
 @app.route('/sensors', methods=['GET', 'POST'])
 def getSensorData():
