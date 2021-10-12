@@ -200,7 +200,7 @@ def getClients():
 
 #getting the sensor data for a session
 @app.route('/allSensors', methods=['GET', 'POST'])
-def getSensorData():
+def getAllSensorData():
     if request.method == 'POST':
         try:
             #change request byte object into a dict for userID
