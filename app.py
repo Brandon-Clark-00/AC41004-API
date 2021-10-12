@@ -151,7 +151,6 @@ def getSessions():
     else:
         return {'Message':'Expected post'}
 
-#getting the clients sessions for therapist
 @app.route('/clientSessions', methods=['GET', 'POST'])
 def getClientSessions():
     if request.method == 'POST':
@@ -197,6 +196,22 @@ def getClients():
             return {'Message':'Cannot get assigned clients'}
     else:
         return {'Message':'Expected post'}
+
+
+#getting the sensor data for a session
+@app.route('/allSensors', methods=['GET', 'POST'])
+def getAllSensorData():
+    if request.method == 'POST':
+        try:
+            #change request byte object into a dict for userID
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            return jsonify([*map(sensor_serializer, Sensor.query.all())])
+        except:
+            raise Exception("Cannot get sensor data")
+            return {'Message':'Cannot get sensor data'}
+    else:
+        return {'Message':'Expected post'}
+
 
 if __name__ == '__main__':
     app.run(debug=True)
