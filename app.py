@@ -11,10 +11,11 @@ CORS(app)
 api = Api(app)
 
 # db details
-username = 'AC41004@theohealth'
+username = 'AC41004'
 password = 'Theohealth!'
 userpass = 'mysql+pymysql://' + username + ':' + password + '@'
-server  = 'theohealth.mysql.database.azure.com'
+# server  = 'theohealth.mysql.database.azure.com'
+server  = 'theohealth.cfv7o7yam3rx.eu-west-2.rds.amazonaws.com'
 dbname   = '/theohealth'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = userpass + server + dbname
