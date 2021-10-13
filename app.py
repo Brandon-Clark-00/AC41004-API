@@ -206,7 +206,13 @@ def getAllSensorData():
         try:
             #change request byte object into a dict for userID
             req_data = ast.literal_eval(request.data.decode('utf-8'))
-            return jsonify([*map(sensor_serializer, Sensor.query.all())])
+            #get session IDs for user
+            userID = req_data["userID"]
+            sessionIDs = Session.query.filter(Session.userID == userID);
+            ids = []
+            for id in sessionIDs:
+                ids.append(id.sessionID)
+            return jsonify([*map(sensor_serializer, Sensor.query.filter(Sensor.SessionID.in_(ids)).all())])
         except:
             raise Exception("Cannot get sensor data")
             return {'Message':'Cannot get sensor data'}
