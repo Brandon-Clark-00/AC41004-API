@@ -152,6 +152,21 @@ def getSessions():
     else:
         return {'Message':'Expected post'}
 
+#getting a specific session
+@app.route('/session', methods=['GET', 'POST'])
+def getSession():
+    if request.method == 'POST':
+        try:
+            #change request byte object into a dict for userID
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            sessionID = req_data["sessionID"]
+            return jsonify([*map(session_serializer, Session.query.filter(Session.sessionID == sessionID))])
+        except:
+            raise Exception("Cannot get session")
+            return {'Message':'Cannot get session'}
+    else:
+        return {'Message':'Expected post'}
+
 @app.route('/clientSessions', methods=['GET', 'POST'])
 def getClientSessions():
     if request.method == 'POST':
