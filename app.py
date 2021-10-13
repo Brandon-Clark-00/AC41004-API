@@ -145,7 +145,7 @@ def getSessions():
             #change request byte object into a dict for userID
             req_data = ast.literal_eval(request.data.decode('utf-8'))
             userID = req_data["userID"]
-            return jsonify([*map(session_serializer, Session.query.filter(Session.userID == userID))])
+            return jsonify([*map(session_serializer, Session.query.filter(Session.userID == userID).order_by(Session.Session_Date.desc()))])
         except:
             raise Exception("Cannot get users sessions")
             return {'Message':'Cannot get users sessions'}
@@ -174,7 +174,7 @@ def getClientSessions():
             #change request byte object into a dict for userID
             req_data = ast.literal_eval(request.data.decode('utf-8'))
             clientID = req_data["clientID"]
-            return jsonify([*map(session_serializer, Session.query.filter(Session.userID == clientID))])
+            return jsonify([*map(session_serializer, Session.query.filter(Session.userID == clientID).order_by(Session.Session_Date.desc()))])
         except:
             raise Exception("Cannot get users sessions")
             return {'Message':'Cannot get users sessions'}
@@ -204,7 +204,6 @@ def getClients():
             #change request byte object into a dict for userID
             req_data = ast.literal_eval(request.data.decode('utf-8'))
             userID = req_data["userID"]
-            print(userID)
             #get all users with the physio id of logged in user
             return jsonify([*map(user_serializer, User.query.filter(User.physioID == userID))])
         except:
