@@ -195,7 +195,6 @@ def updateClient():
             address1 = str(req_data["address1"])
             address2 = str(req_data["address2"])
             postcode = str(req_data["postcode"])
-            print(name, dob, email, address1, address2, postcode)
             #update
             User.query.filter(User.userID == userID).update({User.Name: name, User.DoB: dob, User.Email: email, User.Address_line_one: address1, User.Address_line_two: address2, User.Postcode: postcode})
             db.session.commit()
