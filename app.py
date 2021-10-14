@@ -219,12 +219,12 @@ def getClient():
         try:
             #change request byte object into a dict for userID
             req_data = ast.literal_eval(request.data.decode('utf-8'))
-            userID = req_data["userID"]
+            email = req_data["email"]
             #get all users with the physio id of logged in user
-            return jsonify([*map(user_serializer, User.query.filter(User.userID == userID))])
+            return jsonify([*map(user_serializer, User.query.filter(User.email == email))])
         except:
-            raise Exception("Cannot get assigned clients")
-            return {'Message':'Cannot get assigned clients'}
+            raise Exception("Cannot get assigned client")
+            return {'Message':'Cannot get assigned client'}
     else:
         return {'Message':'Expected post'}
 
