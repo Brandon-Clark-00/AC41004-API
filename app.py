@@ -214,7 +214,7 @@ def getClients():
 
 # getting the current client
 @app.route('/client', methods=['GET', 'POST'])
-def getClients():
+def getClient():
     if request.method == 'POST':
         try:
             #change request byte object into a dict for userID
