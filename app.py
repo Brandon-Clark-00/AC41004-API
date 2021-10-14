@@ -181,6 +181,29 @@ def getClientSessions():
     else:
         return {'Message':'Expected post'}
 
+@app.route('/updateClient', methods=['GET', 'POST'])
+def updateClient():
+    if request.method == 'POST':
+        try:
+            #change request byte object into a dict for userID
+            req_data = ast.literal_eval(request.data.decode('utf-8'))
+            userID = req_data["userID"]
+            #get data to update
+            name = req_data["name"]
+            dob = req_data["dob"]
+            email = req_data["email"]
+            address1 = req_data["address1"]
+            address2 = req_data["address2"]
+            postcode = req_data["postcode"]
+            #update
+            query = User.query.filter(User.userID == userID).update({User.Name: name, User.DoB: dob, User.Email: email, User.Address_line_one: address1, User.Address_line_two: address2, User.Postcode: postcode})
+            return jsonify([*map(user_serializer, User.query.filter(User.userID == userID))])
+        except:
+            raise Exception("Cannot update user")
+            return {'Message':'Cannot update user'}
+    else:
+        return {'Message':'Expected post'}
+
 #getting the sensor data for a session
 @app.route('/sensors', methods=['GET', 'POST'])
 def getSensorData():
