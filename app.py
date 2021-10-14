@@ -188,6 +188,7 @@ def updateClient():
             #change request byte object into a dict for userID
             req_data = ast.literal_eval(request.data.decode('utf-8'))
             userID = req_data["userID"]
+
             #get data to update
             name = str(req_data["name"])
             dob = str(req_data["dob"])
@@ -195,6 +196,23 @@ def updateClient():
             address1 = str(req_data["address1"])
             address2 = str(req_data["address2"])
             postcode = str(req_data["postcode"])
+
+            #get user
+            user = [*map(user_serializer, User.query.filter(User.userID == userID))]
+            print(user) #[{'userId': 3, 'name': 'Jamie Hunter', 'dob': '0000-00-00', 'email': '', 'address1': '', 'address2': '', 'postcode': '', 'isPhysio': 1, 'physioID': 0, 'lastOnline': None, 'password': '1'}]
+            if name == "":
+                name = str(user[0]['name'])
+            if dob == "":
+                dob = str(user[0]['dob'])
+            if email == "":
+                email = str(user[0]['email'])
+            if address1 == "":
+                address1 = str(user[0]['address1'])
+            if address2 == "":
+                address2 = str(user[0]['address2'])
+            if postcode == "":
+                postcode = str(user[0]['postcode'])
+
             #update
             User.query.filter(User.userID == userID).update({User.Name: name, User.DoB: dob, User.Email: email, User.Address_line_one: address1, User.Address_line_two: address2, User.Postcode: postcode})
             db.session.commit()
