@@ -212,6 +212,7 @@ def getClients():
     else:
         return {'Message':'Expected post'}
 
+# getting the current client
 @app.route('/client', methods=['GET', 'POST'])
 def getClients():
     if request.method == 'POST':
@@ -220,7 +221,7 @@ def getClients():
             req_data = ast.literal_eval(request.data.decode('utf-8'))
             userID = req_data["userID"]
             #get all users with the physio id of logged in user
-            return jsonify([*map(user_serializer, User.query(User.userID == userID))])
+            return jsonify([*map(user_serializer, User.query.filter(User.userID == userID))])
         except:
             raise Exception("Cannot get assigned clients")
             return {'Message':'Cannot get assigned clients'}
