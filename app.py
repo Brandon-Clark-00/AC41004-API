@@ -199,7 +199,6 @@ def updateClient():
 
             #get user
             user = [*map(user_serializer, User.query.filter(User.userID == userID))]
-            print(user) #[{'userId': 3, 'name': 'Jamie Hunter', 'dob': '0000-00-00', 'email': '', 'address1': '', 'address2': '', 'postcode': '', 'isPhysio': 1, 'physioID': 0, 'lastOnline': None, 'password': '1'}]
             if name == "":
                 name = str(user[0]['name'])
             if dob == "":
