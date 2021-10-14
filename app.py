@@ -189,14 +189,16 @@ def updateClient():
             req_data = ast.literal_eval(request.data.decode('utf-8'))
             userID = req_data["userID"]
             #get data to update
-            name = req_data["name"]
-            dob = req_data["dob"]
-            email = req_data["email"]
-            address1 = req_data["address1"]
-            address2 = req_data["address2"]
-            postcode = req_data["postcode"]
+            name = str(req_data["name"])
+            dob = str(req_data["dob"])
+            email = str(req_data["email"])
+            address1 = str(req_data["address1"])
+            address2 = str(req_data["address2"])
+            postcode = str(req_data["postcode"])
+            print(name, dob, email, address1, address2, postcode)
             #update
-            query = User.query.filter(User.userID == userID).update({User.Name: name, User.DoB: dob, User.Email: email, User.Address_line_one: address1, User.Address_line_two: address2, User.Postcode: postcode})
+            User.query.filter(User.userID == userID).update({User.Name: name, User.DoB: dob, User.Email: email, User.Address_line_one: address1, User.Address_line_two: address2, User.Postcode: postcode})
+            db.session.commit()
             return jsonify([*map(user_serializer, User.query.filter(User.userID == userID))])
         except:
             raise Exception("Cannot update user")
